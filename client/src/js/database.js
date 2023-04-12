@@ -14,8 +14,8 @@ const initdb = async () =>
 
 // Method that accepts some content and adds it to the database
 export const putDb = async (content) => {
-  const contactDb = await openDB("jate", 1);
-  const tx = contactDb.transaction("jate", "readwrite");
+  const jateDb = await openDB("jate", 1);
+  const tx = jateDb.transaction("jate", "readwrite");
   const store = tx.objectStore("jate");
   const request = store.put({
     value: content,
@@ -29,13 +29,21 @@ export const putDb = async (content) => {
 
 // Method that gets all the content from the database
 export const getDb = async () => {
-  const contactDb = await openDB("jate", 1);
-  const tx = contactDb.transaction("jate", "readonly");
+  const jateDb = await openDB("jate", 1);
+  const tx = jateDb.transaction("jate", "readonly");
   const store = tx.objectStore("jate");
-  const request = store.getAll();
+  const request = store.get(1);
   const result = await request;
   console.log("result.value", result);
-  return result;
+  // if result is undefined there wont be a .value property on it. The ? is an optional chaining operator. With the ? .value wont return an error, just undefined
+  // essentially
+  // if (result && result.value) {
+  //   return result.value;
+  // } else {
+  //   return undefined;
+  // }
+
+  return result?.value;
 };
 
 initdb();
